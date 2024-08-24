@@ -7,7 +7,7 @@ import (
 
 type Color = Vec3
 
-func WriteColor(w io.Writer, pixelColor Color) {
+func WriteColor(w io.Writer, pixelColor *Color) {
 	r := pixelColor.X()
 	g := pixelColor.Y()
 	b := pixelColor.Z()
@@ -17,5 +17,5 @@ func WriteColor(w io.Writer, pixelColor Color) {
 	gbyte := int(255.999 * g)
 	bbyte := int(255.999 * b)
 
-	fmt.Fprintf(w, "%d %d %d", rbyte, gbyte, bbyte)
+	fmt.Fprintf(w, "%d %d %d\n", rbyte, gbyte, bbyte)
 }
