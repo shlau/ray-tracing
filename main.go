@@ -6,7 +6,20 @@ import (
 	"os"
 )
 
+func HitSphere(center *Point3, radius float64, r *Ray) bool {
+	oc := VectorDiff(center, r.Orig())
+	a := Dot(r.Dir(), r.Dir())
+	b := -2.0 * Dot(r.Dir(), oc)
+	c := Dot(oc, oc) - radius*radius
+	discriminant := b*b - 4*a*c
+	return discriminant >= 0
+}
+
 func RayColor(r *Ray) *Color {
+	if HitSphere(NewVec3(0, 0, -1), 0.5, r) {
+		return NewVec3(1, 0, 0)
+	}
+
 	unitDirection := UnitVector(r.Dir())
 	a := 0.5 * (unitDirection.Y() + 1.0)
 	u := VectorScalarProduct(1.0-a, NewVec3(1.0, 1.0, 1.0))
