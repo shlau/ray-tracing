@@ -3,21 +3,30 @@ package main
 import (
 	"fmt"
 	"log"
+	"math"
 	"os"
 )
 
-func HitSphere(center *Point3, radius float64, r *Ray) bool {
+func HitSphere(center *Point3, radius float64, r *Ray) float64 {
 	oc := VectorDiff(center, r.Orig())
 	a := Dot(r.Dir(), r.Dir())
 	b := -2.0 * Dot(r.Dir(), oc)
 	c := Dot(oc, oc) - radius*radius
 	discriminant := b*b - 4*a*c
-	return discriminant >= 0
+
+	if discriminant < 0 {
+		return -1.0
+	} else {
+		return (-b - math.Sqrt(discriminant)) / (2.0 * a)
+	}
+
 }
 
 func RayColor(r *Ray) *Color {
-	if HitSphere(NewVec3(0, 0, -1), 0.5, r) {
-		return NewVec3(1, 0, 0)
+	t := HitSphere(NewVec3(0, 0, -1), 0.5, r)
+	if t > 0.0 {
+		N := UnitVector(VectorDiff(r.At(t), NewVec3(0, 0, -1)))
+		return VectorScalarProduct(0.5, NewVec3(N.X()+1, N.Y()+1, N.Z()+1))
 	}
 
 	unitDirection := UnitVector(r.Dir())

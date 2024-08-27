@@ -14,5 +14,5 @@ func (r *Ray) Dir() *Vec3 {
 }
 
 func (r *Ray) At(t float64) *Point3 {
-	return r.orig.Add(r.dir.MultiplyScalar(t))
+	return VectorSum(r.orig, (r.dir.MultiplyScalar(t)))
 }
