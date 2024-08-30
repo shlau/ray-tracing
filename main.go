@@ -22,11 +22,10 @@ func HitSphere(center *Point3, radius float64, r *Ray) float64 {
 
 }
 
-func RayColor(r *Ray) *Color {
-	t := HitSphere(NewVec3(0, 0, -1), 0.5, r)
-	if t > 0.0 {
-		N := UnitVector(VectorDiff(r.At(t), NewVec3(0, 0, -1)))
-		return VectorScalarProduct(0.5, NewVec3(N.X()+1, N.Y()+1, N.Z()+1))
+func RayColor(r *Ray, world Hittable) *Color {
+	rec := &HitRecord{}
+	if world.Hit(r, 0, math.Inf(1), rec) {
+		return VectorScalarProduct(0.5, (VectorSum(rec.normal, NewVec3(1, 1, 1))))
 	}
 
 	unitDirection := UnitVector(r.Dir())
@@ -45,6 +44,12 @@ func main() {
 	if imageHeight < 1 {
 		imageHeight = 1
 	}
+
+	// World
+	world := &HittableList{}
+
+	world.add(NewSphere(NewVec3(0, 0, -1), 0.5))
+	world.add(NewSphere(NewVec3(0, -100.5, -1), 100))
 
 	// Camera
 
@@ -79,7 +84,7 @@ func main() {
 			pixelCenter := VectorSum(pixel00Loc, offset)
 			rayDirection := VectorSum(pixelCenter, cameraCenter.Negative())
 			r := Ray{cameraCenter, rayDirection}
-			pixelColor := RayColor(&r)
+			pixelColor := RayColor(&r, world)
 			WriteColor(os.Stdout, pixelColor)
 		}
 	}

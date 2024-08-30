@@ -25,7 +25,10 @@ func (h *HittableList) Hit(r *Ray, rayTMin float64, rayTMax float64, rec *HitRec
 		if obj.Hit(r, rayTMin, closestSoFar, tempRec) {
 			hitAnything = true
 			closestSoFar = tempRec.t
-			rec = tempRec
+			rec.p = tempRec.p
+			rec.normal = tempRec.normal
+			rec.t = tempRec.t
+			rec.frontFace = tempRec.frontFace
 		}
 	}
 	return hitAnything
